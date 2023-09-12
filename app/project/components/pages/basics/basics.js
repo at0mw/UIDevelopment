@@ -78,7 +78,6 @@ const basicsModule = (() => {
     showSliderValue(false);
   }
 
-
   function handleShowSliderUserInput() {
     showSliderValue(true);
   }
