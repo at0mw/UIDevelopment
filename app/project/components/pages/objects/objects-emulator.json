@@ -1,0 +1,10 @@
+{
+  "cues": [],
+  "onStart": [
+    {
+      "type": "s", 
+      "state": "22", 
+      "value":"[{ \"id\": 1, \"label\": \"75%\", \"order\": 1 },{ \"id\": 2, \"label\": \"60%\", \"order\": 2 },{ \"id\": 3, \"label\": \"Descending\", \"order\": 3 },{ \"id\": 4, \"label\": \"Ascending\", \"order\": 4 },{ \"id\": 5, \"label\": \"1%\", \"order\": 5 },{ \"id\": 6, \"label\": \"Chaos\", \"order\": 6 },{ \"id\": 7, \"label\": \"Order\", \"order\": 7 },{ \"id\": 8, \"label\": \"99%\", \"order\": 8 }]"
+    } 
+  ]
+}

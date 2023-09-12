@@ -1,0 +1,4 @@
+node_modules
+#ignore all dist folder files
+dist
+dist/dev/Shell/index.html

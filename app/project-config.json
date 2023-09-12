@@ -1,0 +1,141 @@
+{
+  "projectName": "ui-development",
+  "version": "0.0.1",
+  "faviconPath": "favicon.ico",
+  "menuOrientation": "vertical",
+  "selectedTheme": "dark-theme",
+  "useWebXPanel": true,
+  "themes": [
+    {
+      "name": "light-theme",
+      "extends": "light-theme",
+      "brandLogo": {
+        "url": "./app/template/assets/img/proAV-logo-transparent.png",
+        "alt": "Crestron Logo",
+        "receiveStateUrl": ""
+      },
+      "backgroundProperties": {
+        "backgroundColor": [
+          "#f8f8f8"
+        ]
+      }
+    },
+    {
+      "name": "dark-theme",
+      "extends": "dark-theme",
+      "brandLogo": {
+        "url": "./app/template/assets/img/proAV-logo-transparent.png",
+        "alt": "Crestron Logo",
+        "receiveStateUrl": ""
+      },
+      "backgroundProperties": {
+        "backgroundColor": [
+          "#1a1a1a"
+        ]
+      }
+    },
+    {
+      "name": "project-light-theme",
+      "extends": "light-theme",
+      "brandLogo": {
+        "url": "./app/template/assets/img/ch5-logo-light.svg",
+        "alt": "Crestron Logo",
+        "receiveStateUrl": ""
+      },
+      "backgroundProperties": {
+        "backgroundColor": [
+          "#f8f8f8"
+        ]
+      }
+    },
+    {
+      "name": "project-dark-theme",
+      "extends": "dark-theme",
+      "brandLogo": {
+        "url": "./app/template/assets/img/ch5-logo-dark.svg",
+        "alt": "Crestron Logo",
+        "receiveStateUrl": ""
+      },
+      "backgroundProperties": {
+        "backgroundColor": [
+          "#1a1a1a"
+        ]
+      }
+    },
+    {
+      "name": "project-custom-theme",
+      "extends": "light-theme",
+      "brandLogo": {
+        "url": "./app/template/assets/img/ch5-logo-light.svg",
+        "alt": "Crestron Logo",
+        "receiveStateUrl": ""
+      },
+      "backgroundProperties": {
+        "backgroundColor": [
+          "#f8f8f8"
+        ]
+      }
+    }
+  ],
+  "config": {
+    "controlSystem": {}
+  },
+  "header": {
+    "display": true,
+    "displayInfo": true,
+    "diagnostics": {
+      "logs": {
+        "logAfterProjectLoad": true,
+        "receiveStateLogDiagnostics": "",
+        "logDiagnostics": "none"
+      }
+    },
+    "$component": ""
+  },
+  "footer": {
+    "display": false,
+    "$component": ""
+  },
+  "content": {
+    "$defaultView": "basics",
+    "triggerViewProperties": {
+      "gestureable": false,
+      "disableAnimation": true
+    },
+    "pages": [
+      {
+        "pageName": "basics",
+        "fullPath": "./app/project/components/pages/basics/",
+        "fileName": "basics.html",
+        "preloadPage": true,
+        "cachePage": false,
+        "standAloneView": false,
+        "navigation": {
+          "sequence": 1,
+          "label": "basics",
+          "isI18nLabel": false,
+          "iconClass": "fas fa-radio",
+          "iconUrl": "",
+          "iconPosition": ""
+        }
+      },
+      {
+        "pageName": "objects",
+        "fullPath": "./app/project/components/pages/objects/",
+        "fileName": "objects.html",
+        "preloadPage": true,
+        "cachePage": false,
+        "standAloneView": false,
+        "navigation": {
+          "sequence": 2,
+          "label": "objects",
+          "isI18nLabel": false,
+          "iconClass": "fas fa-shapes",
+          "iconUrl": "",
+          "iconPosition": ""
+        }
+      }
+    ],
+    "widgets": []
+  }
+}
