@@ -1,0 +1,49 @@
+{
+	"files": [
+		{
+			"path": "app/project/scripts/DynamicListMenuLogic.js",
+			"bookmarks": [
+				{
+					"line": 102,
+					"column": 44,
+					"label": "Setup"
+				},
+				{
+					"line": 155,
+					"column": 81,
+					"label": "Subscriptions"
+				},
+				{
+					"line": 210,
+					"column": 58,
+					"label": "Default Action Framework"
+				},
+				{
+					"line": 376,
+					"column": 43,
+					"label": "Default Action Updates"
+				},
+				{
+					"line": 414,
+					"column": 48,
+					"label": "Button Dragging Script"
+				},
+				{
+					"line": 516,
+					"column": 1,
+					"label": "Dragging Action Framework"
+				},
+				{
+					"line": 581,
+					"column": 43,
+					"label": "Toggle Drag/Default Mode"
+				},
+				{
+					"line": 653,
+					"column": 47,
+					"label": "Arrange Presets"
+				}
+			]
+		}
+	]
+}

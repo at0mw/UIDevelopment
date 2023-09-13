@@ -47,34 +47,17 @@ const objectsModule = (() => {
   const itemsPerPage = 5;
   let presetManager;
 
-  function createPresets(shadePresets) {
-    const shadePresetContainer = document.getElementById(dynamicListId);
-    const presetsArray = generateShadePresetHTML(shadePresets);
+  function createPresets(presetsConfig) {
+    // const shadePresetContainer = document.getElementById(dynamicListId);
+    // const presetsArray = generateShadePresetHTML(presetsConfig);
 
     presetManager = new DynamicListMenuLogic(
       "demo",
-      dynamicMenuId,
-      dynamicListButtonId,
-      shadePresetContainer,
-      editableButtonId,
-      itemsPerPage,
-      backButtonId,
-      forwardButtonId
+      itemsPerPage
     );
     // presetManager = new DynamicListMenuLogic('shade');
-    presetManager.createDynamicPresets(presetsArray);
+    presetManager.createDynamicPresets(presetsConfig);
     presetManager.onPresetSelected("presetSelected", handlePresetSelected);
-  }
-
-  // Function to generate the HTML for lighting presets
-  function generateShadePresetHTML(presets) {
-    return presets.map((preset) => ({
-      id: "demo-listButton" + preset.id,
-      order: preset.order,
-      html: `<div class="list-button button demo-list-dynamic" id="demo-listButton${preset.id}" draggable="false">    
-                  <div class="list-button-text unclickable">${preset.label}</div>
-              </div>`,
-    }));
   }
 
   function handlePresetSelected(event) {

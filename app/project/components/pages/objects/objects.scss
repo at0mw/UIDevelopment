@@ -83,6 +83,19 @@
     transform-origin: center;
   }
 
+  
+  .label-icon-area {    
+    display: none;
+    align-items: center;
+    width: 100%;
+    justify-content: end;
+    padding-right: 20px;
+  }
+
+  .unclickable {
+    pointer-events: none;
+  }
+
   @keyframes wiggle {
     0%,
     100% {
