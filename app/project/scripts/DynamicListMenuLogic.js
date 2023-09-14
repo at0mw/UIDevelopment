@@ -53,12 +53,17 @@ class DynamicListMenuLogic {
     this.releaseButton = this.releaseButton.bind(this);
     this.currentPageFirstItemIndex = this.currentPageFirstItemIndex.bind(this);
     this.extractNumberFromId = this.extractNumberFromId.bind(this);
-    this.displayNewPageofPresets = this.displayNewPageofPresets.bind(this);
+    this.retrieveNewPageandInsertHtml =
+      this.retrieveNewPageandInsertHtml.bind(this);
+    this.incrementPage = this.incrementPage.bind(this);
+    this.decrementPage = this.decrementPage.bind(this);
     this.moveBackwardPage = this.moveBackwardPage.bind(this);
     this.moveForwardPage = this.moveForwardPage.bind(this);
     this.revealMenuButtons = this.revealMenuButtons.bind(this);
     this.hideForwardButton = this.hideForwardButton.bind(this);
     this.hideBackwardButton = this.hideBackwardButton.bind(this);
+    this.currentlyActiveMenuButtonsSwitch =
+      this.currentlyActiveMenuButtonsSwitch.bind(this);
 
     // Action Updates
     this.presetSelected = this.presetSelected.bind(this);
@@ -84,9 +89,10 @@ class DynamicListMenuLogic {
     this.toggleActiveDefaultMode = this.toggleActiveDefaultMode.bind(this);
     this.setActiveDraggingButton = this.setActiveDraggingButton.bind(this);
     this.unsetActiveDraggingButton = this.unsetActiveDraggingButton.bind(this);
-    this.changeNavButtonsForDragging = this.changeNavButtonsForDragging.bind(this);
-    this.changeNavButtonsForStopDragging = this.changeNavButtonsForStopDragging.bind(this);
-
+    this.changeNavButtonsForDragging =
+      this.changeNavButtonsForDragging.bind(this);
+    this.changeNavButtonsForStopDragging =
+      this.changeNavButtonsForStopDragging.bind(this);
 
     // Arrange Presets
     this.reorderListArray = this.reorderListArray.bind(this);
@@ -126,28 +132,41 @@ class DynamicListMenuLogic {
     // Generate an array of preset instances - each preset instance in the array has an id, order and html
     this.presetsArray = this.generatePresetHTML(presetsConfig);
 
-    this.displayNewPageofPresets();
+    this.retrieveNewPageandInsertHtml();
+    this.subscribeToEvents();
   }
 
-  displayNewPageofPresets() {
+  retrieveNewPageandInsertHtml(reorderMode, ignoredElementId) {
+    //console.log("Retrieving new page: ", reorderMode, ignoredElementId);
     if (this.presetsArray) {
-      const maxPage = Math.ceil(this.presetsArray.length / this.itemsPerPage);
-      this.revealMenuButtons();
-      if(this.currentPage == 1) {
-        this.hideBackwardButton();
-      } else if (maxPage == this.currentPage) {        
-        this.hideForwardButton();
-      }
-      console.log(this.presetsArray);
-      const startIndex = this.currentPageFirstItemIndex();
+      this.currentlyActiveMenuButtonsSwitch();
 
+      const startIndex = this.currentPageFirstItemIndex();
+      let numberOfPresetsToRetrieve = this.itemsPerPage;
+      if (reorderMode) {
+        console.log("Reorder mode active...");
+        numberOfPresetsToRetrieve--;
+      }
       let presetsForPage = this.getPresetsForPage(
         startIndex,
-        this.itemsPerPage
+        numberOfPresetsToRetrieve,
+        ignoredElementId
       );
+      if (reorderMode) {
+        console.log("Page Preset Html: ", presetsForPage);
+      }
       this.dynamicListContainer.innerHTML = "";
       this.dynamicListContainer.insertAdjacentHTML("beforeend", presetsForPage);
-      this.subscribeToEvents();
+    }
+  }
+
+  currentlyActiveMenuButtonsSwitch() {
+    const maxPage = Math.ceil(this.presetsArray.length / this.itemsPerPage);
+    this.revealMenuButtons();
+    if (this.currentPage == 1) {
+      this.hideBackwardButton();
+    } else if (maxPage == this.currentPage) {
+      this.hideForwardButton();
     }
   }
 
@@ -161,7 +180,7 @@ class DynamicListMenuLogic {
   subscribeToEvents() {
     this.unsubscribeToEvents();
     const movableButtons = document.querySelectorAll(
-      '.' + this.dynamicListButtonClass
+      "." + this.dynamicListButtonClass
     );
     // For each list button add listeners
     movableButtons.forEach((button) => {
@@ -186,7 +205,7 @@ class DynamicListMenuLogic {
   */
   unsubscribeToEvents() {
     const movableButtons = document.querySelectorAll(
-      '.' + this.dynamicListButtonClass
+      "." + this.dynamicListButtonClass
     );
     // For each list button add listeners
     movableButtons.forEach((button) => {
@@ -300,7 +319,7 @@ class DynamicListMenuLogic {
     next press initiate.
   */
   releaseButton() {
-    console.log("Release Pressed Button...");
+    //console.log("Release Pressed Button...");
     if (this.pressedButton) {
       this.pressedButton.classList.remove("touched");
     }
@@ -319,7 +338,7 @@ class DynamicListMenuLogic {
     @returns {number} Extracts the second part of the id, which should be formatted as stringName:idNumber.
   */
   extractNumberFromId(id) {
-    console.log("Id to be extracted: ", id);
+    //console.log("Id to be extracted: ", id);
     const parts = id.split(":");
     if (parts.length === 2 && !isNaN(parts[1])) {
       return parts[1];
@@ -330,45 +349,61 @@ class DynamicListMenuLogic {
   /*
     Decrement the current page if possible and then recreate dynamic presets.
   */
-  moveBackwardPage() {
+  decrementPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
     }
-    this.displayNewPageofPresets();
+  }
+
+  /*
+    Handle decrementing page and page change.
+  */
+  moveBackwardPage() {
+    this.decrementPage();
+    this.retrieveNewPageandInsertHtml();
+    this.subscribeToEvents();
   }
 
   /*
     Increment the current page if possible and then recreate dynamic presets.
   */
-  moveForwardPage() {
+  incrementPage() {
     const maxPage = Math.ceil(this.presetsArray.length / this.itemsPerPage);
     if (this.currentPage < maxPage) {
       this.currentPage++;
     }
-    this.displayNewPageofPresets();
+  }
+
+  /*
+    Handle incrementing page and page change.
+  */
+  moveForwardPage() {
+    this.incrementPage();
+    this.retrieveNewPageandInsertHtml();
+    this.subscribeToEvents();
   }
 
   revealMenuButtons() {
-    const forwardButton = document.getElementById(this.forwardButtonId);   
+    const forwardButton = document.getElementById(this.forwardButtonId);
     const backButton = document.getElementById(this.backButtonId);
-     if(forwardButton && backButton){
-      forwardButton.style.opacity = '1';
-      backButton.style.opacity = '1';
+    if (forwardButton && backButton) {
+      forwardButton.style.opacity = "1";
+      backButton.style.opacity = "1";
     }
   }
 
   hideForwardButton() {
     const forwardButton = document.getElementById(this.forwardButtonId);
 
-    if(forwardButton){
-      forwardButton.style.opacity = '0';
+    if (forwardButton) {
+      forwardButton.style.opacity = "0";
     }
   }
 
   hideBackwardButton() {
     const backButton = document.getElementById(this.backButtonId);
-    if(backButton){
-      backButton.style.opacity = '0';
+    if (backButton) {
+      backButton.style.opacity = "0";
     }
   }
 
@@ -380,7 +415,7 @@ class DynamicListMenuLogic {
     This method is used to notify that a preset has been selected.
   */
   presetSelected(button) {
-    console.log("Button Selected: ", button.id);
+    //console.log("Button Selected: ", button.id);
     const buttonNumber = this.extractNumberFromId(button.id);
     if (buttonNumber) {
       const event = new CustomEvent("presetSelected", {
@@ -415,7 +450,7 @@ class DynamicListMenuLogic {
   /* ================================== Handle Button Dragging to Rearrange ================================== */
 
   initiateDragMode(button) {
-    console.log("Start Dragging...");
+    //console.log("Start Dragging...");
     this.dragging = true;
     this.toggleActiveDragMode(button);
 
@@ -503,7 +538,8 @@ class DynamicListMenuLogic {
       this.toggleActiveDefaultMode();
 
       this.sortPresetOrderByIndex();
-      this.displayNewPageofPresets();
+      this.retrieveNewPageandInsertHtml();
+      this.subscribeToEvents();
       //console.log("Detaching event listeners...")
       document.removeEventListener("mousedown", this.clickOutsideHandler);
       document.removeEventListener("touchstart", this.clickOutsideHandler);
@@ -560,22 +596,18 @@ class DynamicListMenuLogic {
     This will trigger when a button is dragged to the specified area which enables reordering the item to the previous page.
   */
   reorderHighlightedBack() {
-    this.moveBackwardPage();
-    const startIndex = this.currentPageFirstItemIndex();
-    let presetsForPage = this.getPresetsForPage(startIndex, 4, this.activeButton.id); // Including the highlighted to create 5
-    this.dynamicListContainer.innerHTML = "";
-    this.dynamicListContainer.insertAdjacentHTML("beforeend", presetsForPage);
+    this.decrementPage();
+    this.retrieveNewPageandInsertHtml(true, this.activeButton.id);
+    //this.subscribeToEvents();
   }
 
   /*
     This will trigger when a button is dragged to the specified area which enables reordering the item to the next page.        
   */
   reorderHighlightedForward() {
-    this.moveForwardPage();
-    const startIndex = this.currentPageFirstItemIndex();
-    let presetsForPage = this.getPresetsForPage(startIndex + 1, 4, this.activeButton.id); // Including the highlighted to create 5
-    this.dynamicListContainer.innerHTML = "";
-    this.dynamicListContainer.insertAdjacentHTML("beforeend", presetsForPage);
+    this.incrementPage();
+    this.retrieveNewPageandInsertHtml(true, this.activeButton.id);
+    //this.subscribeToEvents();
   }
 
   /* ================================== Handle Dynamic List Dragging Action Framework End ================================== */
@@ -596,7 +628,7 @@ class DynamicListMenuLogic {
   }
 
   setActiveDraggingButton(button) {
-    const iconArea = button.querySelector('.' + this.editableButtonClass);
+    const iconArea = button.querySelector("." + this.editableButtonClass);
     if (iconArea) {
       iconArea.style.display = "flex";
     }
@@ -661,7 +693,7 @@ class DynamicListMenuLogic {
     //console.log("Active Buttons Last Index Position: ", lastActiveButtonListIndex);
 
     const movableButtons = document.querySelectorAll(
-      '.' + this.dynamicListButtonClass
+      "." + this.dynamicListButtonClass
     );
     let insertIndex = -1; // Target Index I wish to insert item at
 
@@ -710,27 +742,33 @@ class DynamicListMenuLogic {
 
   /*
       This method returns the preset html strings for the presets in within the index positions given.
-      @param {number} pageOffset - This value indicates that the presets need to drop the first or last value (-1 or +1 respectively)
+      @param {startIndex} pageOffset - This value indicates that the presets need to drop the first or last value (-1 or +1 respectively)
       @param {number} itemsPerPage - The number of items per page.
       @returns {string} The HTML strings for the presets on the specified page concatenated.
     */
   getPresetsForPage(startIndex, itemsPerPage, dontIncludeId) {
-    console.log("Presets for page... ", dontIncludeId);
+    console.log("Presets for page :: Dont Include: ", dontIncludeId);
     let presetsArrayTempCopy = [...this.presetsArray];
+    if (dontIncludeId) {
+      presetsArrayTempCopy = presetsArrayTempCopy.filter(
+        (preset) => preset.id !== dontIncludeId
+      );
+    } 
+
+    const endIndex = startIndex + itemsPerPage;
+    presetsArrayTempCopy = presetsArrayTempCopy.sort(
+      (a, b) => a.order - b.order
+    );
     if(dontIncludeId) {
-      presetsArrayTempCopy = this.presetsArrayTempCopy.filter((preset) => preset.id !== dontIncludeId);
-    } else {
-      const endIndex = startIndex + itemsPerPage;
-      this.presetsArray = this.presetsArray.sort((a, b) => a.order - b.order);
-  
-      // Extract only the HTML strings from presetsDictionary
-      const htmlStrings = this.presetsArray
-        .slice(startIndex, endIndex)
-        .map((preset) => preset.html)
-        .join("");
-  
-      return htmlStrings;
+      console.log("Temp Filtered Presets: ", presetsArrayTempCopy);
     }
+    // Extract only the HTML strings from presetsDictionary
+    const htmlStrings = presetsArrayTempCopy
+      .slice(startIndex, endIndex)
+      .map((preset) => preset.html)
+      .join("");
+
+    return htmlStrings;
   }
 
   /* ================================= Handle Arrange Presets End ================================= */
