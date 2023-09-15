@@ -24,7 +24,9 @@ const basicsModule = (() => {
       "./app/project/components/pages/basics/basics-emulator.json"
     );
     // Uncomment the below line and comment the above to load the emulator all the time.
-    // serviceModule.addEmulatorScenario("./app/project/components/pages/basics/basics-emulator.json");
+    // serviceModule.addEmulatorScenario(
+    //   "./app/project/components/pages/basics/basics-emulator.json"
+    // );
 
     window.addEventListener("resize", handleShowSliderAutoInput);
     const slider_input = document.getElementById("slider_input");
@@ -120,6 +122,12 @@ const basicsModule = (() => {
     sliderThumb.style.left = bulletPosition * space + "px";
     sliderLine.style.width = sliderInput.value + "%";
   }
+
+  const subscribeInfoFeedback = CrComLib.subscribeState("s", "1", (value) => {
+    console.log("Feedback CrComLib :::: String Join 1 ::: Value :: ", value);
+    const messageDisplay = document.getElementById("message-display");
+    messageDisplay.textContent = value;
+  });
 
   /**
    * private method for page class initialization

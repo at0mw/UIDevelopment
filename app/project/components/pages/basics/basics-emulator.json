@@ -1,4 +1,13 @@
 {
-  "cues": [],
-  "onStart": []
+  "cues": [
+    {"type": "b", "event": "2", "trigger": true,  
+      "actions": [{"type": "b", "state": "active_state_class_objects","logic": "link"}]}
+  ],
+  "onStart": [
+    {
+      "type": "b", 
+      "state": "active_state_class_objects", 
+      "value":true
+    } 
+  ]
 }
